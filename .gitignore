@@ -1,6 +1,21 @@
-node_modules
-dist
+# dependencies and build output
+node_modules/
+dist/
+.firebase/
+*.tsbuildinfo
+
+# local environment (.env.production is committed on purpose: public web config only)
 .env
 .env.local
+.env.*.local
+
+# logs and OS/editor files
 *.log
+firebase-debug.log*
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Hallmark per-project state (the installed skill in .agents/ and .claude/ stays tracked)
+.hallmark/
