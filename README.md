@@ -17,10 +17,10 @@ Stack: Vite, React, TypeScript, Tailwind CSS v4, Firebase. The visual system fol
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173/STEP1_Uworld_Tracker/
+npm run dev        # http://localhost:5173/
 npm run build
 ```
 
-Set up sync and deployment with [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
+Set up sync and hosting (Firebase Hosting, no GitHub Pages) with [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
 
 The previous single-file version is kept in `legacy/` for reference.

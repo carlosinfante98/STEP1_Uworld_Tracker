@@ -1,20 +1,40 @@
-# Firebase setup
+# Firebase setup and hosting
 
-The app stores your blocks, goals, reminders and assessments in Firestore, scoped per signed-in user.
-Until Firebase is configured it runs in device-only mode (data stays in the browser).
+The app is a static web app (Vite build) hosted on **Firebase Hosting**, with Google sign-in and Firestore for data
+scoped per user. No GitHub Pages and no server to run. Until Firebase is configured it runs in device-only mode
+(data stays in the browser).
 
-## What to create in the Firebase console (https://console.firebase.google.com)
+## 1. Create these in the Firebase console (https://console.firebase.google.com)
 
 1. **Create a project** (Google Analytics is optional; you can turn it off).
-2. **Add a web app**: Project overview → `</>` Web. Register it (no Firebase Hosting needed) and copy the `firebaseConfig` values.
+2. **Add a web app:** Project overview → `</>` Web. Register it, tick **"Also set up Firebase Hosting"** if offered,
+   and copy the `firebaseConfig` values.
 3. **Authentication → Sign-in method → Google → Enable.** Pick a support email and save.
-4. **Authentication → Settings → Authorized domains → Add domain:** `carlosinfante98.github.io`
-   (`localhost` is normally already allowed for local development).
-5. **Firestore Database → Create database.** Choose a region near you and start in **production mode**.
-6. **Firestore → Rules:** replace the contents with `firestore.rules` from this repo and **Publish**.
-   These rules let each user read and write only `users/{their uid}/...`.
+4. **Firestore Database → Create database.** Choose a region near you and start in **production mode**.
+5. **Hosting → Get started** (just click through; the deploy happens from your terminal below).
 
-No indexes are needed; the app reads whole collections per user.
+Your site's domains, `<project-id>.web.app` and `<project-id>.firebaseapp.com`, are authorized for sign-in by default.
+If you later add a custom domain, add it under Authentication → Settings → Authorized domains.
+
+## 2. Put your config in the app
+
+```bash
+cp .env.example .env.local     # then fill in the six VITE_FIREBASE_* values
+```
+
+These values identify your project; they aren't secrets. Security comes from the Firestore rules below.
+
+## 3. Deploy (from your own computer)
+
+```bash
+npm install
+npx firebase-tools login
+npx firebase-tools use --add     # once: pick your project
+npm run deploy                   # builds, then publishes Hosting and the Firestore rules
+```
+
+`firebase.json` points Hosting at `dist/` and publishes `firestore.rules`, so the deploy also applies the security
+rules. Re-run `npm run deploy` whenever you change the app. Your site will be at `https://<project-id>.web.app`.
 
 ## Data layout (created automatically on first write; you don't create these by hand)
 
@@ -25,16 +45,9 @@ users/{uid}/tasks/{id}          { text, done, createdAt }
 users/{uid}/assessments/{id}    { name, date, score, note, createdAt }
 ```
 
-## Giving the app your config
+No indexes are needed; the app reads whole collections per user.
 
-The web config identifies your project; it is not a secret. Either:
+## Other hosts
 
-- **GitHub Pages build (recommended):** repo → Settings → Secrets and variables → Actions → **Variables** tab →
-  add `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`,
-  `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`.
-- **Local dev:** copy `.env.example` to `.env.local`, fill it in, run `npm run dev`.
-
-## GitHub Pages
-
-Repo → Settings → Pages → **Source: GitHub Actions**. The workflow in `.github/workflows/deploy.yml` builds and
-publishes on every push to `main`. Expected URL: `https://carlosinfante98.github.io/STEP1_Uworld_Tracker/`.
+Any static host works (`npm run build`, publish `dist/`, set the `VITE_FIREBASE_*` variables at build time, and add the
+host's domain under Authentication → Authorized domains). Firebase Hosting is the one set up here.
