@@ -1,29 +1,26 @@
+# Step 1 QBank Tracker
 
+A modern dashboard for tracking UWorld Step 1 progress. You log each block's score by hand after finishing it in
+UWorld; the tracker handles the rest. It does not connect to UWorld and is not affiliated with it.
 
-# STEP 1 UWorld QBank Tracker
+- **Log blocks:** date, system, subject, tutor/timed, questions, correct, omitted, minutes, reviewed, notes
+- **Overview:** attempted and reviewed progress against a goal and a fallback, daily pace needed, projection at your 7-day rate, accuracy trend, activity heatmap, weakest systems
+- **Systems:** percent correct by system and by subject, plus systems you haven't started
+- **Plan:** short-term reminders and self-assessment scores
+- **Light and dark mode** (system by default), a ⌘K / Ctrl+K command palette, mobile layout
+- **Sync** with Firebase (Google sign-in + Firestore), or device-only mode with no setup
 
-A lightweight, no-frills tracker for your UWorld QBank progress. Log blocks as you attempt and review them, watch your pace toward a daily/overall goal, and keep a simple to-do list of reminders you can check off.
+Stack: Vite, React, TypeScript, Tailwind CSS v4, Firebase. The visual system follows the Cobalt theme from
+[Hallmark](https://github.com/nutlope/hallmark).
 
-## ✨ Features
+## Run it
 
-Add a block each time you attempt or review a UWorld set.
-Track running totals and streaks for attempted vs. reviewed blocks.
-Pace tracker shows how you're trending against a goal (and a fallback target).
-Built-in to-do list: jot reminders (e.g. "2 blocks + recap Renal") and mark them done as you go.
-100% free, no account, no ads.
+```bash
+npm install
+npm run dev        # http://localhost:5173/STEP1_Uworld_Tracker/
+npm run build
+```
 
-## 🔒 Privacy
+Set up sync and deployment with [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
 
-This tool stores everything locally in your own browser (`localStorage`). No data is ever sent to a server; your stats stay on your device. Clearing your browser data, or switching devices/browsers, will reset your tracker.
-
-## 💬 Feedback
-
-Have ideas or found a bug? Open a [Discussion](../../discussions) or an [Issue](../../issues). I'd love to hear from you.
-
-## 🖥️ How to use
-
-Open `index.html` directly in any browser, or enable GitHub Pages on this repo for a shareable link.
-
-![Preview](preview.png)
-
-Made by [Maryam Shaukat](https://github.com/maryamshauki)
+The previous single-file version is kept in `legacy/` for reference.
