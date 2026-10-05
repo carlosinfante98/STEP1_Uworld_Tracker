@@ -1,5 +1,7 @@
 # Step 1 QBank Tracker
 
+**Live: https://step1-dashboard.web.app**
+
 A modern dashboard for tracking UWorld Step 1 progress. You log each block's score by hand after finishing it in
 UWorld; the tracker handles the rest. It does not connect to UWorld and is not affiliated with it.
 
@@ -19,7 +21,13 @@ Stack: Vite, React, TypeScript, Tailwind CSS v4, Firebase. The visual system fol
 npm install
 npm run dev        # http://localhost:5173/
 npm run build
+npm run deploy     # build, then deploy Hosting + Firestore rules (needs `firebase login`)
 ```
+
+Pushing to `main` also deploys automatically through the GitHub Action in `.github/workflows/deploy.yml`.
+
+`package.json` overrides `@grpc/grpc-js` to a patched release because the latest `firebase` still pins a vulnerable
+one; don't run `npm audit fix --force`, which would downgrade Firebase.
 
 Set up sync and hosting (Firebase Hosting, no GitHub Pages) with [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
 
