@@ -15,14 +15,39 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   unset: { label: 'Set up goals', cls: 'bg-sunken text-ink-3' },
 }
 
+const TONE: Record<string, string> = {
+  ahead: 'text-good',
+  'on-track': 'text-accent',
+  behind: 'text-warn',
+  done: 'text-good',
+  'no-data': 'text-ink-3',
+  unset: 'text-ink-3',
+}
+
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="min-w-0 px-5 py-4">
-      <div className="mono-label">{label}</div>
-      <div className="tnum mt-1.5 font-display text-3xl font-semibold tracking-tight text-ink">{value}</div>
-      {sub && <div className="tnum mt-1 truncate text-sm text-ink-3">{sub}</div>}
+    <div className="min-w-0">
+      <dt className="text-sm text-ink-3">{label}</dt>
+      <dd className="tnum mt-1 font-display text-2xl font-semibold tracking-tight text-ink">{value}</dd>
+      {sub && <dd className="tnum mt-0.5 truncate text-sm text-ink-3">{sub}</dd>}
     </div>
   )
+}
+
+function headline(p: ReturnType<typeof pace>): string {
+  switch (p.status) {
+    case 'done': return 'Goal reached'
+    case 'no-data': return 'Log your first block to start tracking'
+    case 'unset': return 'Set your goals to get a pace'
+    case 'ahead': return 'Ahead of pace'
+    case 'on-track': return 'On pace for your goal'
+    default: return p.perDayGoal === null ? 'Behind pace' : `Behind pace: aim for ${Math.ceil(p.perDayGoal)} a day`
+  }
+}
+
+function detail(p: ReturnType<typeof pace>, hasBlocks: boolean): string | null {
+  if (p.status === 'unset' || p.status === 'no-data' || p.status === 'done' || p.projected === null || !hasBlocks) return null
+  return `At your 7-day rate of ${p.avg7.toFixed(1)} a day you reach about ${fmtNum(Math.round(p.projected))} questions by exam day. The goal is ${fmtNum(p.goalQs)}, with ${p.daysLeft} days left.`
 }
 
 export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => void; onSettings: () => void; onOpenBlocks: () => void }) {
@@ -51,21 +76,24 @@ export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => voi
         </Card>
       )}
 
-      <Card className="rise">
-        <div className="grid grid-cols-2 divide-rule max-md:[&>*:nth-child(n+3)]:border-t max-md:[&>*]:border-rule md:grid-cols-4 md:divide-x">
-          <Stat label="Attempted" value={fmtNum(t.attempted)} sub={settings.totalQuestions ? `of ${fmtNum(settings.totalQuestions)} · ${pctOf(t.attempted).toFixed(1)}%` : 'total not set'} />
-          <Stat label="Accuracy" value={fmtPct(t.pct)} sub={t.attempted ? `${fmtNum(t.correct)} correct · ${fmtNum(t.incorrect)} wrong` : 'no answers yet'} />
-          <Stat label="Days to exam" value={p.daysLeft === null ? '—' : String(p.daysLeft)} sub={settings.examDate ? fmtDate(settings.examDate, { month: 'short', day: 'numeric', year: 'numeric' }) : 'date not set'} />
-          <Stat label="Streak" value={`${s.current}d`} sub={`best ${s.best}d`} />
+      <section className="rise grid gap-8 border-b border-rule pb-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-end">
+        <div className="min-w-0">
+          <p className={`text-sm font-medium ${TONE[p.status]}`}>{status.label}</p>
+          <h1 className="mt-2 font-display text-4xl font-semibold leading-[1.1] text-ink sm:text-5xl">{headline(p)}</h1>
+          {detail(p, blocks.length > 0) && <p className="mt-4 max-w-prose text-base text-ink-2">{detail(p, blocks.length > 0)}</p>}
         </div>
-      </Card>
+        <dl className="grid grid-cols-3 gap-x-6">
+          <Stat label="Attempted" value={fmtNum(t.attempted)} sub={settings.totalQuestions ? `${pctOf(t.attempted).toFixed(1)}% of ${fmtNum(settings.totalQuestions)}` : undefined} />
+          <Stat label="Accuracy" value={fmtPct(t.pct)} sub={t.attempted ? `${fmtNum(t.correct)} correct` : undefined} />
+          <Stat label="Exam in" value={p.daysLeft === null ? '—' : `${p.daysLeft}d`} sub={`streak ${s.current}d`} />
+        </dl>
+      </section>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <Card>
           <CardHead
             title="Progress"
             hint={settings.totalQuestions ? `Goal ${settings.goalPct}% · fallback ${settings.fallbackPct}% of ${fmtNum(settings.totalQuestions)}` : 'Set a QBank total to see goal markers'}
-            action={<span className={`mono-label rounded-ctl px-2 py-1 ${status.cls}`}>{status.label}</span>}
           />
           <div className="grid gap-6 px-5 pb-5 pt-5">
             {([['Attempted', t.attempted, 'accent'], ['Reviewed', t.reviewed, 'good']] as const).map(([label, n, tone]) => (
@@ -78,11 +106,11 @@ export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => voi
               </div>
             ))}
             <dl className="tnum grid grid-cols-2 gap-x-4 gap-y-3 border-t border-rule pt-4 text-sm sm:grid-cols-3">
-              <div><dt className="mono-label">To goal</dt><dd className="mt-1 text-ink">{settings.totalQuestions ? fmtNum(p.remainingGoal) : '—'}</dd></div>
-              <div><dt className="mono-label">Needed / day</dt><dd className="mt-1 text-ink">{p.perDayGoal === null ? '—' : p.perDayGoal.toFixed(1)}</dd></div>
-              <div><dt className="mono-label">Last 7 days / day</dt><dd className="mt-1 text-ink">{blocks.length ? p.avg7.toFixed(1) : '—'}</dd></div>
-              <div><dt className="mono-label">Fallback / day</dt><dd className="mt-1 text-ink">{p.perDayFallback === null ? '—' : p.perDayFallback.toFixed(1)}</dd></div>
-              <div className="col-span-2"><dt className="mono-label">Projected by exam day at your 7-day rate</dt><dd className="mt-1 text-ink">{p.projected === null || !blocks.length ? '—' : `${fmtNum(Math.round(p.projected))} questions`}</dd></div>
+              <div><dt className="text-ink-3">To goal</dt><dd className="mt-1 text-ink">{settings.totalQuestions ? fmtNum(p.remainingGoal) : '—'}</dd></div>
+              <div><dt className="text-ink-3">Needed / day</dt><dd className="mt-1 text-ink">{p.perDayGoal === null ? '—' : p.perDayGoal.toFixed(1)}</dd></div>
+              <div><dt className="text-ink-3">Last 7 days / day</dt><dd className="mt-1 text-ink">{blocks.length ? p.avg7.toFixed(1) : '—'}</dd></div>
+              <div><dt className="text-ink-3">Fallback / day</dt><dd className="mt-1 text-ink">{p.perDayFallback === null ? '—' : p.perDayFallback.toFixed(1)}</dd></div>
+              <div className="col-span-2"><dt className="text-ink-3">Projected by exam day at your 7-day rate</dt><dd className="mt-1 text-ink">{p.projected === null || !blocks.length ? '—' : `${fmtNum(Math.round(p.projected))} questions`}</dd></div>
             </dl>
           </div>
         </Card>
@@ -141,7 +169,7 @@ function RecentRow({ b }: { b: Block }) {
     <li className="flex items-center justify-between gap-4 py-3">
       <div className="min-w-0">
         <div className="truncate text-sm text-ink">{b.name || b.system}</div>
-        <div className="mono-label mt-0.5 truncate">{fmtDate(b.date)} · {b.system} · {b.mode}</div>
+        <div className="mt-0.5 truncate text-xs text-ink-3">{fmtDate(b.date)} · {b.system} · {b.mode}</div>
       </div>
       <div className="tnum shrink-0 text-right text-sm">
         <span className="text-ink">{fmtPct(pct)}</span>
