@@ -17,8 +17,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# AI tooling installed locally (Hallmark design skill, etc.)
-.agents/
-.claude/
+# Hallmark per-project state (the installed skill in .agents/ and .claude/ stays tracked)
 .hallmark/
-skills-lock.json
