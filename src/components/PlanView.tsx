@@ -45,7 +45,7 @@ export function PlanView() {
               <li key={t.id} className="flex items-center gap-3 py-2.5">
                 <input type="checkbox" checked={t.done} onChange={(e) => toggleTask(t.id, e.target.checked)} aria-label={`Done: ${t.text}`} className="size-4 shrink-0 accent-[var(--accent)]" />
                 <span className={`min-w-0 flex-1 break-words text-sm ${t.done ? 'text-ink-3 line-through' : 'text-ink'}`}>{t.text}</span>
-                <button onClick={() => deleteTask(t.id)} aria-label="Delete reminder" className="rounded-ctl p-1.5 text-ink-3 hover:bg-bad-soft hover:text-bad"><Trash2 className="size-4" /></button>
+                <button onClick={() => deleteTask(t.id)} aria-label="Delete reminder" className="inline-flex size-11 items-center justify-center rounded-ctl text-ink-3 hover:bg-bad-soft md:size-9 hover:text-bad"><Trash2 className="size-4" /></button>
               </li>
             ))}
           </ul>
@@ -66,7 +66,7 @@ export function PlanView() {
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <span className="tnum font-display text-xl font-semibold text-ink">{x.score}</span>
-                  <button onClick={() => deleteAssessment(x.id)} aria-label="Delete assessment" className="rounded-ctl p-1.5 text-ink-3 hover:bg-bad-soft hover:text-bad"><Trash2 className="size-4" /></button>
+                  <button onClick={() => deleteAssessment(x.id)} aria-label="Delete assessment" className="inline-flex size-11 items-center justify-center rounded-ctl text-ink-3 hover:bg-bad-soft md:size-9 hover:text-bad"><Trash2 className="size-4" /></button>
                 </div>
               </li>
             ))}

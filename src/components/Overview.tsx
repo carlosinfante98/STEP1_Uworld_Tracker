@@ -66,7 +66,7 @@ export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => voi
   const head = headline(p)
 
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-8">
       {setup && (
         <Card className="border-accent/40 bg-accent-soft/40">
           <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
@@ -79,7 +79,7 @@ export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => voi
         </Card>
       )}
 
-      <section className="rise grid gap-6 rounded-card border border-rule bg-surface p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-8">
+      <section className="rise grid gap-6 border-b border-rule pb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
         <div className="min-w-0">
           <h1 className={`text-4xl font-semibold tracking-tight md:text-5xl ${TONE[p.status]}`}>{head.lead}</h1>
           <p className="mt-2 max-w-xl text-base text-ink-2">{head.detail}</p>
@@ -90,13 +90,13 @@ export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => voi
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-5 border-b border-rule pb-6 sm:grid-cols-3 sm:divide-x sm:divide-rule [&>*+*]:sm:pl-6">
         <Stat label="Attempted" value={fmtNum(t.attempted)} sub={settings.totalQuestions ? `of ${fmtNum(settings.totalQuestions)} · ${pctOf(t.attempted).toFixed(1)}%` : 'total not set'} />
         <Stat label="Accuracy" value={fmtPct(t.pct)} sub={t.attempted ? `${fmtNum(t.correct)} correct · ${fmtNum(t.incorrect)} wrong` : 'no answers yet'} />
         <Stat label="Streak" value={`${s.current}d`} sub={`best ${s.best}d`} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-10">
         <Panel
           title="Progress"
           hint={settings.totalQuestions ? `Goal ${settings.goalPct}% · fallback ${settings.fallbackPct}% of ${fmtNum(settings.totalQuestions)}` : 'Set a QBank total to see goal markers'}
@@ -140,7 +140,7 @@ export function Overview({ onLog, onSettings, onOpenBlocks }: { onLog: () => voi
         </Panel>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
         <Panel title="Accuracy trend" hint="Each dot is a block; the line is a 5-block average">
           <div className="pt-5"><TrendChart blocks={blocks} /></div>
         </Panel>

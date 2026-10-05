@@ -94,7 +94,7 @@ function Shell({ account }: { account: Account }) {
   return (
     <div className="min-h-dvh">
       <Header tab={tab} setTab={setTab} onLog={logNew} onPalette={() => setPalette(true)} account={account} />
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+      <main className="mx-auto max-w-6xl px-4 pb-24 pt-6 sm:px-6 md:ml-56 md:max-w-none md:px-10 md:pb-10 md:pt-8 xl:max-w-[72rem]">
         {mode === 'local' && (
           <p className="mb-5 rounded-ctl border border-rule bg-sunken px-3.5 py-2.5 text-sm text-ink-2">
             {firebaseEnabled

@@ -16,7 +16,7 @@ export function CommandPalette({ open, onClose, commands }: { open: boolean; onC
   const run = (c?: Command) => { if (c) { onClose(); c.run() } }
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[12vh]" role="presentation">
-      <div className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]" onClick={onClose} aria-hidden />
+      <div className="absolute inset-0 bg-ink/40" onClick={onClose} aria-hidden />
       <div role="dialog" aria-modal="true" aria-label="Command palette" className="rise relative w-full max-w-lg overflow-hidden rounded-card border border-rule bg-surface">
         <div className="flex items-center gap-3 border-b border-rule px-4">
           <Search className="size-4 text-ink-3" aria-hidden />
@@ -42,7 +42,7 @@ export function CommandPalette({ open, onClose, commands }: { open: boolean; onC
               <button
                 onMouseEnter={() => setI(idx)}
                 onClick={() => run(c)}
-                className={`flex w-full items-center justify-between gap-3 rounded-ctl px-3 py-2 text-left text-sm ${idx === i ? 'bg-accent-soft text-ink' : 'text-ink-2'}`}
+                className={`flex w-full items-center justify-between gap-3 min-h-11 rounded-ctl px-3 py-2 text-left md:min-h-9 text-sm ${idx === i ? 'bg-accent-soft text-ink' : 'text-ink-2'}`}
               >
                 <span className="truncate">{c.label}</span>
                 {c.hint && <span className="mono-label shrink-0">{c.hint}</span>}

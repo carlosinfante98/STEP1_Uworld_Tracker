@@ -1,0 +1,82 @@
+/* Hallmark · locked tokens for design.md (Cobalt · modern-minimal · light + graphite dark)
+ * Imported by src/index.css. Components reference these by utility name; no raw values elsewhere. */
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --color-warn: var(--warn);
+  --color-good-soft: var(--good-soft);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn-soft: var(--warn-soft);
+
+  --radius-pip: 3px;
+  --radius-seg: 4px;
+  --radius-ctl: 6px;
+  --radius-card: 10px;
+
+  --shadow-pop: 0 1px 2px var(--shadow);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root,
+[data-theme='light'] {
+  --paper: oklch(98.5% 0.004 250);
+  --surface: oklch(100% 0 0);
+  --sunken: oklch(96% 0.006 250);
+  --rule: oklch(91% 0.008 252);
+  --rule-strong: oklch(84% 0.012 253);
+  --ink: oklch(24% 0.02 258);
+  --ink-2: oklch(38% 0.018 257);
+  --ink-3: oklch(52% 0.016 256);
+  --accent: oklch(52% 0.2 256);
+  --accent-ink: oklch(99% 0.004 250);
+  --accent-soft: oklch(94% 0.04 256);
+  --good: oklch(48% 0.13 156);
+  --bad: oklch(52% 0.19 25);
+  --warn: oklch(50% 0.14 70);
+  --good-soft: oklch(94% 0.04 156);
+  --bad-soft: oklch(95% 0.03 25);
+  --warn-soft: oklch(95% 0.05 85);
+  --shadow: oklch(0% 0 0 / 0.08);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --paper: oklch(19% 0.016 260);
+  --surface: oklch(22.5% 0.018 260);
+  --sunken: oklch(16.5% 0.015 260);
+  --rule: oklch(30% 0.02 260);
+  --rule-strong: oklch(38% 0.024 260);
+  --ink: oklch(95% 0.008 250);
+  --ink-2: oklch(84% 0.012 252);
+  --ink-3: oklch(68% 0.016 255);
+  --accent: oklch(70% 0.17 256);
+  --accent-ink: oklch(18% 0.02 260);
+  --accent-soft: oklch(30% 0.07 258);
+  --good: oklch(76% 0.15 156);
+  --bad: oklch(72% 0.17 25);
+  --warn: oklch(80% 0.14 85);
+  --good-soft: oklch(30% 0.05 156);
+  --bad-soft: oklch(30% 0.06 25);
+  --warn-soft: oklch(32% 0.06 85);
+  --shadow: oklch(0% 0 0 / 0.4);
+  color-scheme: dark;
+}

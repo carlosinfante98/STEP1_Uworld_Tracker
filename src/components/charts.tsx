@@ -1,16 +1,16 @@
-import { useState } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import type { Block } from '../lib/types'
 import { addDays, fmtDate, parseISO, today } from '../lib/dates'
 import { perDay, trend } from '../lib/stats'
 
-/** GitHub-style grid of questions attempted per day, oldest week on the left. */
+/** Grid of questions attempted per day, oldest week on the left. Arrow keys move the selection; tap or click selects. */
 export function Heatmap({ blocks, weeks = 16 }: { blocks: Block[]; weeks?: number }) {
   const counts = perDay(blocks)
   const t = today()
   const dow = parseISO(t).getDay() // 0 = Sunday
   const start = addDays(t, -(dow + (weeks - 1) * 7))
   const max = Math.max(40, ...counts.values())
-  const [hover, setHover] = useState<string | null>(null)
+  const [sel, setSel] = useState<string | null>(null)
 
   const cols = Array.from({ length: weeks }, (_, w) =>
     Array.from({ length: 7 }, (_, d) => addDays(start, w * 7 + d)),
@@ -18,9 +18,24 @@ export function Heatmap({ blocks, weeks = 16 }: { blocks: Block[]; weeks?: numbe
   const level = (n: number) => (n === 0 ? 0 : Math.min(4, Math.ceil((n / max) * 4)))
   const fill = ['bg-sunken', 'bg-accent/25', 'bg-accent/50', 'bg-accent/75', 'bg-accent']
 
+  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    const d = { ArrowLeft: -7, ArrowRight: 7, ArrowUp: -1, ArrowDown: 1 }[e.key as 'ArrowLeft']
+    if (!d) return
+    e.preventDefault()
+    const next = addDays(sel ?? t, d)
+    if (next >= start && next <= t) setSel(next)
+  }
+
   return (
     <div>
-      <div className="flex gap-1 overflow-x-auto pb-1" role="img" aria-label="Questions attempted per day, last 16 weeks">
+      <div
+        className="flex gap-1 overflow-x-auto pb-1"
+        role="application"
+        tabIndex={0}
+        onKeyDown={onKey}
+        onFocus={() => setSel((s) => s ?? t)}
+        aria-label="Questions attempted per day, last 16 weeks. Use arrow keys to move between days."
+      >
         {cols.map((col, i) => (
           <div key={i} className="grid shrink-0 grid-rows-7 gap-1">
             {col.map((day) => {
@@ -29,10 +44,9 @@ export function Heatmap({ blocks, weeks = 16 }: { blocks: Block[]; weeks?: numbe
               return (
                 <div
                   key={day}
-                  onMouseEnter={() => setHover(day)}
-                  onMouseLeave={() => setHover(null)}
-                  title={`${fmtDate(day, { month: 'short', day: 'numeric', year: 'numeric' })}: ${n} questions`}
-                  className={`size-3.5 rounded-[3px] ${future ? 'opacity-0' : fill[level(n)]} ${day === t ? 'ring-1 ring-ink-3' : ''}`}
+                  onClick={() => !future && setSel(day)}
+                  onMouseEnter={() => !future && setSel(day)}
+                  className={`size-3.5 rounded-pip ${future ? 'opacity-0' : fill[level(n)]} ${day === sel ? 'ring-2 ring-ink' : day === t ? 'ring-1 ring-ink-3' : ''}`}
                 />
               )
             })}
@@ -40,11 +54,11 @@ export function Heatmap({ blocks, weeks = 16 }: { blocks: Block[]; weeks?: numbe
         ))}
       </div>
       <div className="mt-3 flex items-center justify-between gap-3 text-xs text-ink-3">
-        <span className="tnum min-h-4">
-          {hover ? `${fmtDate(hover, { weekday: 'short', month: 'short', day: 'numeric' })} · ${counts.get(hover) ?? 0} Qs` : 'Hover a day for its count'}
+        <span className="tnum min-h-4" aria-live="polite">
+          {sel ? `${fmtDate(sel, { weekday: 'short', month: 'short', day: 'numeric' })} · ${counts.get(sel) ?? 0} Qs` : 'Select a day for its count'}
         </span>
         <span className="flex items-center gap-1" aria-hidden>
-          less {fill.map((f) => <i key={f} className={`size-3 rounded-[3px] ${f}`} />)} more
+          less {fill.map((f) => <i key={f} className={`size-3 rounded-pip ${f}`} />)} more
         </span>
       </div>
     </div>

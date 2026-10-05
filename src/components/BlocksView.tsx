@@ -65,16 +65,16 @@ export function BlocksView({ onLog, onEdit }: { onLog: () => void; onEdit: (b: B
                       onClick={() => updateBlock(b.id, { reviewed: !b.reviewed })}
                       aria-pressed={b.reviewed}
                       title={b.reviewed ? 'Reviewed — click to undo' : 'Mark reviewed'}
-                      className={`inline-flex min-h-9 items-center gap-1.5 rounded-ctl px-2 text-sm transition-colors hover:bg-sunken ${b.reviewed ? 'text-good' : 'text-ink-3'}`}
+                      className={`inline-flex min-h-11 items-center gap-1.5 rounded-ctl px-2 md:min-h-9 text-sm transition-colors hover:bg-sunken ${b.reviewed ? 'text-good' : 'text-ink-3'}`}
                     >
                       {b.reviewed ? <CheckCircle2 className="size-4" /> : <Circle className="size-4" />}
                       <span className="hidden sm:inline">{b.reviewed ? 'Reviewed' : 'Review'}</span>
                     </button>
-                    <button onClick={() => onEdit(b)} aria-label="Edit block" className="rounded-ctl p-2 text-ink-3 hover:bg-sunken hover:text-ink"><Pencil className="size-4" /></button>
+                    <button onClick={() => onEdit(b)} aria-label="Edit block" className="inline-flex size-11 items-center justify-center rounded-ctl text-ink-3 hover:bg-sunken md:size-9 hover:text-ink"><Pencil className="size-4" /></button>
                     <button
                       onClick={() => { if (confirm('Delete this block?')) void deleteBlock(b.id) }}
                       aria-label="Delete block"
-                      className="rounded-ctl p-2 text-ink-3 hover:bg-bad-soft hover:text-bad"
+                      className="inline-flex size-11 items-center justify-center rounded-ctl text-ink-3 hover:bg-bad-soft md:size-9 hover:text-bad"
                     ><Trash2 className="size-4" /></button>
                   </div>
                 </div>
