@@ -19,7 +19,8 @@ If you later add a custom domain, add it under Authentication → Settings → A
 ## 2. Put your config in the app
 
 ```bash
-cp .env.example .env.local     # then fill in the six VITE_FIREBASE_* values
+The production config for `step1-dashboard` is already committed in `.env.production`, so `npm run deploy` needs nothing more.
+For local dev, `cp .env.production .env.local`.
 ```
 
 These values identify your project; they aren't secrets. Security comes from the Firestore rules below.
@@ -29,7 +30,7 @@ These values identify your project; they aren't secrets. Security comes from the
 ```bash
 npm install
 npx firebase-tools login
-npx firebase-tools use --add     # once: pick your project
+# (project already set to step1-dashboard in .firebaserc)
 npm run deploy                   # builds, then publishes Hosting and the Firestore rules
 ```
 
