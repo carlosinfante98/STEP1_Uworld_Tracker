@@ -37,6 +37,25 @@ npm run deploy                   # builds, then publishes Hosting and the Firest
 `firebase.json` points Hosting at `dist/` and publishes `firestore.rules`, so the deploy also applies the security
 rules. Re-run `npm run deploy` whenever you change the app. Your site will be at `https://<project-id>.web.app`.
 
+## Automatic deploys on push to `main`
+
+`.github/workflows/deploy.yml` builds the app and publishes it to Firebase Hosting whenever `main` changes.
+It needs one repository secret, `FIREBASE_SERVICE_ACCOUNT_STEP1_DASHBOARD`, holding a service-account key for the project.
+
+Easiest way to create it (from the repo folder on your computer):
+
+```bash
+firebase init hosting:github
+```
+
+Answer the prompts: repo `carlosinfante98/STEP1_Uworld_Tracker`, **no** build step (the workflow already has one),
+and **don't** let it overwrite `.github/workflows/deploy.yml` or add a pull-request preview unless you want one.
+The command creates the service account and stores its key as a GitHub secret. Check the secret's name in
+repo → Settings → Secrets and variables → Actions; if it differs from the one above, edit the workflow to match.
+
+The workflow publishes **Hosting only**. Firestore rules change rarely; publish them with `npm run deploy` when
+`firestore.rules` changes.
+
 ## Data layout (created automatically on first write; you don't create these by hand)
 
 ```
